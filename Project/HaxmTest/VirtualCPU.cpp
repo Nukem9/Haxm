@@ -7,6 +7,13 @@
 #define HAX_EMULATE_STATE_NONE		0x3
 #define HAX_EMULATE_STATE_INITIAL	0x4
 
+#define SET_SEGMENT_ACCESS(seg, value) \
+	(seg).available = ((value) >> 12) & 1; \
+	(seg).present = ((value) >> 7) & 1; \
+	(seg).dpl = ((value) >> 5) & ~(~0 << (6-5+1)); \
+	(seg).desc = ((value) >> 4) & 1; \
+	(seg).type = ((value) >> 0) & ~(~0 << (3-0+1));
+
 hax_vcpu_state *VCpu_Create(hax_state *Hax)
 {
 	if (!Hax->vm)
@@ -120,13 +127,6 @@ void VCpu_ResetState(hax_vcpu_state *CPU)
 	CPU->tunnel->user_event_pending = 0;
 	CPU->tunnel->ready_for_interrupt_injection = 0;
 }
-
-#define SET_SEGMENT_ACCESS(seg, value) \
-	(seg).available = ((value) >> 12) & 1; \
-	(seg).present = ((value) >> 7) & 1; \
-	(seg).dpl = ((value) >> 5) & ~(~0 << (6-5+1)); \
-	(seg).desc = ((value) >> 4) & 1; \
-	(seg).type = ((value) >> 0) & ~(~0 << (3-0+1));
 
 void VCpu_WriteVMCS(hax_vcpu_state *CPU, UINT Field, UINT64 Value)
 {

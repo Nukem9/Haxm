@@ -136,9 +136,6 @@ void VCpu_WriteVMCS(hax_vcpu_state *CPU, UINT Field, UINT64 Value)
 	if (hax_sync_vcpu_state(CPU, &state, 0) < 0)
 		__debugbreak();
 
-	state._activity_state = 0xFFFFFFFF;
-	state._interruptibility_state.raw = 0xFFFFFFFF;
-
 	// Set the required field
 	switch (Field)
 	{
